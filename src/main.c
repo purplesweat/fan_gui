@@ -1,7 +1,5 @@
 #include <gtk/gtk.h>
-
 #include <math.h>
-
 
 FILE* fancontrol_file;
 
@@ -43,12 +41,15 @@ static void on_activate(GtkApplication* app) {
 
     GtkWidget* box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 
-    GtkWidget* title_label = gtk_label_new("Thinkpad Fan Speed");
+    GtkWidget* title_label = gtk_label_new(NULL);
+    gtk_label_set_markup(GTK_LABEL(title_label),
+            "<span font=\"18\"> Thinkpad Fan Speed </span>");
     GtkWidget* slider = gtk_scale_new_with_range(
             GTK_ORIENTATION_HORIZONTAL, -1, 9, 1);
     GtkWidget* value_label = gtk_label_new("auto");
 
-    g_signal_connect(slider, "value-changed", G_CALLBACK(on_slide), value_label);
+    g_signal_connect(slider, "value-changed",
+            G_CALLBACK(on_slide), value_label);
 
     gtk_box_append(GTK_BOX(box), title_label);
     gtk_box_append(GTK_BOX(box), slider);
@@ -62,7 +63,8 @@ static void on_activate(GtkApplication* app) {
 int main(int argc, char* argv[]) {
     fancontrol_file = fopen("/proc/acpi/ibm/fan", "w");
     if (fancontrol_file == NULL) {
-        fprintf(stderr, "Permission denied; run as root (su -c '%s')\n", argv[0]);
+        fprintf(stderr, "Permission denied; run as root (su -c '%s')\n",
+                argv[0]);
         exit(1);
     }
     GtkApplication* app = gtk_application_new("com.example.GtkApplication",
